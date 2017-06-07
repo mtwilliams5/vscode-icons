@@ -8,3 +8,4 @@ export * from './fileFormat';
 export * from './folderCollection';
 export * from './folderDefault';
 export * from './folderExtension';
+export * from './map';

@@ -1,4 +1,6 @@
 import { IExtension } from './extension';
+import { Map } from './map';
 
-// tslint:disable-next-line no-empty-interface
-export interface IFolderExtension extends IExtension { }
+export interface IFolderExtension extends IExtension {
+  map?: Map[]; // collection of mappings associated to the icon.
+}

@@ -1,8 +1,5 @@
-/* tslint:disable max-line-length */
-import {
-  FileFormat,
-  IFileCollection,
-} from '../../src/models';
+// tslint:disable max-line-length
+import {  FileFormat,  IFileCollection } from '../../src/models';
 
 export const extensions: IFileCollection = {
   default: {

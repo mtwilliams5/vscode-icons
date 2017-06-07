@@ -106,12 +106,53 @@ export class IconGenerator implements models.IIconGenerator {
           };
         }
 
+        const assign = extension => {
+          names.folderNames[extension] = iconFolderDefinition;
+          names.folderNamesExpanded[extension] = iconOpenFolderDefinition;
+          light.folderNames[extension] = hasLightVersion
+            ? iconFolderLightDefinition
+            : iconFolderDefinition;
+          light.folderNamesExpanded[extension] = hasLightVersion
+            ? iconOpenFolderLightDefinition
+            : iconOpenFolderDefinition;
+        };
+        const assignMapping = (extension, map) => {
+          switch (map) {
+            case models.Map.none:
+              break;
+            case models.Map.dotted:
+              assign(`.${extension}`);
+              break;
+            case models.Map.leadingUnderscore:
+              assign(`_${extension}`);
+              break;
+            case models.Map.trailingUnderscore:
+              assign(`${extension}_`);
+              break;
+            case models.Map.fullyUnderscored:
+              assign(`_${extension}_`);
+              break;
+            case models.Map.leadingUnderscoreAndDotted:
+              assign(`_${extension}`);
+              assign(`.${extension}`);
+              break;
+            case models.Map.all:
+              assign(`.${extension}`);
+              assign(`_${extension}`);
+              assign(`${extension}_`);
+              assign(`_${extension}_`);
+              break;
+            default:
+              throw new Error('Not Implemented');
+          }
+        };
+
         current.extensions.forEach(extension => {
-          const key = extension;
-          names.folderNames[key] = iconFolderDefinition;
-          names.folderNamesExpanded[key] = iconOpenFolderDefinition;
-          light.folderNames[key] = hasLightVersion ? iconFolderLightDefinition : iconFolderDefinition;
-          light.folderNamesExpanded[key] = hasLightVersion ? iconOpenFolderLightDefinition : iconOpenFolderDefinition;
+          if (current.map) {
+            current.map.forEach(map => assignMapping(extension, map));
+          }
+
+          assign(extension);
         });
 
         return old;
@@ -274,7 +315,7 @@ export class IconGenerator implements models.IIconGenerator {
       files: this.buildFiles(files, iconsFolderBasePath, hasDefaultLightFile),
     };
     // map structure to the schema
-    schema.iconDefinitions = {...schema.iconDefinitions, ...res.folders.defs, ...res.files.defs};
+    schema.iconDefinitions = { ...schema.iconDefinitions, ...res.folders.defs, ...res.files.defs };
     schema.folderNames = res.folders.names.folderNames;
     schema.folderNamesExpanded = res.folders.names.folderNamesExpanded;
     schema.fileExtensions = res.files.names.fileExtensions;
