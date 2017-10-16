@@ -1,5 +1,7 @@
 import * as _ from 'lodash';
+import * as semver from 'semver';
 import * as models from '../models';
+import { ProjectAutoDetection as pad } from '../init/projectAutoDetection';
 
 export function mergeConfig(
   customFiles: models.IFileCollection,
@@ -67,9 +69,7 @@ function mergeSupported(
     if (file.extends) {
       final
         .filter(x => x.icon === file.extends)
-        .forEach(x => {
-          x.icon = file.icon;
-        });
+        .forEach(x => x.icon = file.icon);
     }
     // remove overrides
     final = final.filter(x => x.icon !== file.overrides);
@@ -88,8 +88,11 @@ function mergeSupported(
 export function toggleAngularPreset(
   disable: boolean,
   files: models.IFileCollection): models.IFileCollection {
+  const projectVersion = semver.valid((pad.ProjectInfo && pad.ProjectInfo.version) || '');
+  const iconVersion = (x: models.IFileExtension) => semver.valid(x.version || '');
   const icons = files.supported
     .filter(x => /^ng_.*\D$/.test(x.icon))
+    .filter(x => semver.gte(projectVersion, iconVersion(x)))
     .map(x => x.icon);
   return togglePreset(disable, icons, files);
 }

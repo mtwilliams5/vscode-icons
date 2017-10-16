@@ -7,6 +7,9 @@ import { LanguageResourceManager } from '../i18n';
 import { IIconSchema } from '../models/iconSchema/iconSchema';
 
 export class ProjectAutoDetection {
+
+  public static get ProjectInfo() { return this._projectInfo; }
+
   public static detectProject(
     findFiles: (
       include: string,
@@ -67,6 +70,7 @@ export class ProjectAutoDetection {
     const iconsJson = iconManifest && parseJSON(iconManifest) as IIconSchema;
     return !iconsJson || !func(iconsJson);
   }
+
   public static getProjectInfo(results: models.IVSCodeUri[], name: models.Projects): models.IProjectInfo {
     let projectInfo: models.IProjectInfo = null;
     results.some(result => {
@@ -75,6 +79,7 @@ export class ProjectAutoDetection {
       projectInfo = this.getInfo(projectJson, name);
       return !!projectInfo;
     });
+    this._projectInfo = projectInfo;
     return projectInfo;
   }
 
@@ -127,6 +132,9 @@ export class ProjectAutoDetection {
         return null;
     }
   }
+
+  private static _projectInfo: models.IProjectInfo;
+
   private static _getIconManifest(): string {
     const manifestFilePath = path.join(__dirname, '..', extensionSettings.iconJsonFileName);
     try {
@@ -135,4 +143,5 @@ export class ProjectAutoDetection {
       return null;
     }
   }
+
 }
