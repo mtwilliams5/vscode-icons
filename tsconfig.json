@@ -9,7 +9,11 @@
     "outDir": "out",
     "lib": ["es6"],
     "sourceMap": true,
-    "rootDir": "."
+    "rootDir": ".",
+    "importHelpers": true,
+    "pretty": true,
+    "newLine": "LF",
+    "strict": true
   },
   "include": ["src/**/*.ts", "test/**/*.ts"]
 }
